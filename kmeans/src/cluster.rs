@@ -11,7 +11,7 @@ pub type Centroid = Vector2D;
 /// in the cluster and sum of those points.
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Cluster {
-    pub curr_centroid: Centroid,
+    pub centroid: Centroid,
     pub points_count: i32,
     pub points_sum: Vector2D,
 }
@@ -21,7 +21,7 @@ impl Cluster {
     /// centroid is the first point for any cluster,
     pub fn new(centroid: Centroid) -> Cluster {
         Cluster {
-            curr_centroid: centroid,
+            centroid: centroid,
             points_count: 1,
             points_sum: centroid,
         }
@@ -29,11 +29,11 @@ impl Cluster {
     /// Increment the number of points and recompute the 
     /// points sum when a new point is pushed into cluster
     pub fn push(&self, point: Vector2D) -> Cluster {
-        if self.curr_centroid == point {
+        if self.centroid == point {
             return *self;
         }
         Cluster {
-            curr_centroid: self.curr_centroid,
+            centroid: self.centroid,
             points_count: self.points_count + 1,
             points_sum: self.points_sum + point,
         }
@@ -43,10 +43,10 @@ impl Cluster {
     fn next_cluster(&self) -> Cluster {
         Cluster::new(self.points_sum / self.points_count as f32)
     }
-    /// Compute the distance between curr_centroid
+    /// Compute the distance between centroid
     /// and nxt_centroid
     fn oscillation(&self) -> f32 {
-        self.curr_centroid.distance(self.next_cluster().curr_centroid)
+        self.centroid.distance(self.next_cluster().centroid)
     }
 }
 
@@ -58,7 +58,7 @@ fn cluster_init_works() {
     assert_eq!(
         c0,
         Cluster {
-            curr_centroid: p0,
+            centroid: p0,
             points_count: 1,
             points_sum: p0,
         }
@@ -66,7 +66,7 @@ fn cluster_init_works() {
     assert_eq!(
         c0.push(p1),
         Cluster {
-            curr_centroid: p0,
+            centroid: p0,
             points_count: 2,
             points_sum: p0 + p1,
         }
@@ -92,7 +92,7 @@ impl ClusterSet {
         *self
             .clusters
             .iter()
-            .map(|c| (point.distance(c.curr_centroid), c))
+            .map(|c| (point.distance(c.centroid), c))
             .min_by(|(d1, _), (d2, _)| d1.partial_cmp(d2).expect("tried a NaN comparison"))
             .unwrap()
             .1
@@ -101,7 +101,7 @@ impl ClusterSet {
     pub fn update(&self, updated_cluster: &Cluster) -> ClusterSet {
         let mut updated_clusters = Vec::new();
         for cluster in self.clusters.iter() {
-            if cluster.curr_centroid == updated_cluster.curr_centroid {
+            if cluster.centroid == updated_cluster.centroid {
                 updated_clusters.push(*updated_cluster)
             } else {
                 updated_clusters.push(*cluster)
@@ -139,7 +139,7 @@ fn clusterset_init_works() {
     assert_eq!(clusterset.find_nearest(p2), c1);
     c1 = c1.push(p2);
     let new_c1 = Cluster {
-        curr_centroid: p1,
+        centroid: p1,
         points_count: 2,
         points_sum: p1 + p2,
     };
