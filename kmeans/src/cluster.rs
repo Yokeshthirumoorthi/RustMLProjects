@@ -3,6 +3,7 @@
 // Please see the file LICENSE in the source
 // distribution of this software for license terms.
 use crate::point::*;
+use std::convert::From;
 
 /// Centroid is a point again
 pub type Centroid = Vector2D;
@@ -17,15 +18,6 @@ pub struct Cluster {
 }
 
 impl Cluster {
-    /// create a new cluster object with a centroid point.
-    /// centroid is the first point for any cluster,
-    pub fn new(centroid: Centroid) -> Cluster {
-        Cluster {
-            centroid,
-            points_count: 1,
-            points_sum: centroid,
-        }
-    }
     /// Increment the number of points and recompute the
     /// points sum when a new point is pushed into cluster
     pub fn push(&self, point: Vector2D) -> Cluster {
@@ -41,7 +33,7 @@ impl Cluster {
     /// divide points_sum with number of points in the cluster
     /// to find clusters new centroid
     fn next_cluster(&self) -> Cluster {
-        Cluster::new(self.points_sum / self.points_count as f32)
+        Cluster::from(self.points_sum / self.points_count as f32)
     }
     /// Compute the distance between centroid
     /// and nxt_centroid
@@ -50,11 +42,23 @@ impl Cluster {
     }
 }
 
+/// create a new cluster object with a centroid point.
+/// centroid is the first point for any cluster,
+impl From<Centroid> for Cluster {
+    fn from(centroid: Centroid) -> Self {
+        Cluster {
+            centroid,
+            points_count: 1,
+            points_sum: centroid,
+        }
+    }
+}
+
 #[test]
 fn cluster_init_works() {
     let p0 = Vector2D::new((0.0, 0.0));
     let p1 = Vector2D::new((1.0, 1.0));
-    let c0 = Cluster::new(p0);
+    let c0 = Cluster::from(p0);
     assert_eq!(c0.oscillation(), 0.0);
     assert_eq!(c0.push(p1).oscillation(), 0.70710677);
 }

@@ -34,7 +34,7 @@ impl DataSet {
         if n > self.items.len() {
             panic!("Dont ask for more clusters than total points in dataset!");
         }
-        let clusters = self.items[..n].iter().map(|p| Cluster::new(*p)).collect();
+        let clusters = self.items[..n].iter().map(|p| Cluster::from(*p)).collect();
 
         ClusterSet::new(clusters)
     }

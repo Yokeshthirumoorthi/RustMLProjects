@@ -38,7 +38,7 @@ fn vector2d_kmeans_math() {
 fn cluster_init_works() {
     let p0 = Vector2D::new((0.0, 0.0));
     let p1 = Vector2D::new((1.0, 1.0));
-    let c0 = Cluster::new(p0);
+    let c0 = Cluster::from(p0);
     assert_eq!(
         c0,
         Cluster {
@@ -62,8 +62,8 @@ fn clusterset_init_works() {
     let p0 = Vector2D::new((0.0, 0.0));
     let p1 = Vector2D::new((1.0, 1.0));
     let p2 = Vector2D::new((2.0, 2.0));
-    let c0 = Cluster::new(p0);
-    let mut c1 = Cluster::new(p1);
+    let c0 = Cluster::from(p0);
+    let mut c1 = Cluster::from(p1);
     let clusterset = ClusterSet::new(vec![c0, c1]);
     assert_eq!(
         clusterset,
@@ -110,8 +110,8 @@ fn dataset_generates_initial_clusters() {
     dataset.push(p1);
     dataset.push(p2);
 
-    let c0 = Cluster::new(p0);
-    let c1 = Cluster::new(p1);
+    let c0 = Cluster::from(p0);
+    let c1 = Cluster::from(p1);
     let expected_clusterset = ClusterSet::new(vec![c0, c1]);
     assert_eq!(dataset.generate_initial_clusters(2), expected_clusterset);
 }
@@ -130,8 +130,8 @@ fn dataset_classifies_into_clusters() {
     dataset.push(p3);
     dataset.push(p4);
 
-    let c1 = Cluster::new(p1);
-    let c2 = Cluster::new(p2);
+    let c1 = Cluster::from(p1);
+    let c2 = Cluster::from(p2);
     let clusterset = ClusterSet::new(vec![c1, c2]);
     let expected_clusterset = ClusterSet::new(vec![c1.push(p0), c2.push(p3).push(p4)]);
     assert_eq!(dataset.classify_into(clusterset), expected_clusterset);
