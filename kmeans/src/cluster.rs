@@ -21,9 +21,6 @@ impl Cluster {
     /// Increment the number of points and recompute the
     /// points sum when a new point is pushed into cluster
     pub fn push(&self, point: Vector2D) -> Cluster {
-        if self.centroid == point {
-            return *self;
-        }
         Cluster {
             centroid: self.centroid,
             points_count: self.points_count + 1,
@@ -48,8 +45,8 @@ impl From<Centroid> for Cluster {
     fn from(centroid: Centroid) -> Self {
         Cluster {
             centroid,
-            points_count: 1,
-            points_sum: centroid,
+            points_count: 0,
+            points_sum: Vector2D::new((0.0,0.0)),
         }
     }
 }
@@ -59,8 +56,7 @@ fn cluster_init_works() {
     let p0 = Vector2D::new((0.0, 0.0));
     let p1 = Vector2D::new((1.0, 1.0));
     let c0 = Cluster::from(p0);
-    assert_eq!(c0.oscillation(), 0.0);
-    assert_eq!(c0.push(p1).oscillation(), 0.70710677);
+    assert_eq!(c0.push(p1).oscillation(), 1.4142135);
 }
 
 /// ClusterSet is collection of clusters.

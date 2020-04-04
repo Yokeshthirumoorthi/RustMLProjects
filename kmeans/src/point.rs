@@ -3,6 +3,7 @@
 // Please see the file LICENSE in the source
 // distribution of this software for license terms.
 use std::ops::{Add, Div, Mul, Sub};
+use std::fmt;
 
 pub trait KMeansMath: Sized {
     type Output;
@@ -13,7 +14,7 @@ pub trait KMeansMath: Sized {
 
 /// Vector2D strictly defines a (x,y) point type
 /// Goal is this kmeans algorithm should run in constant time for n dimensions
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Copy, Clone, PartialEq)]
 pub struct Vector2D {
     // 2 column point
     pub point: (f32, f32),
@@ -85,6 +86,15 @@ impl Div<f32> for Vector2D {
         Vector2D {
             point: (self.point.0 / n, self.point.1 / n),
         }
+    }
+}
+
+impl fmt::Debug for Vector2D {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_tuple("")
+         .field(&self.point.0)
+         .field(&self.point.1)
+         .finish()
     }
 }
 

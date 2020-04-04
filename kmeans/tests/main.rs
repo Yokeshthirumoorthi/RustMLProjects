@@ -43,7 +43,7 @@ fn cluster_init_works() {
         c0,
         Cluster {
             centroid: p0,
-            points_count: 1,
+            points_count: 0,
             points_sum: p0,
         }
     );
@@ -51,7 +51,7 @@ fn cluster_init_works() {
         c0.push(p1),
         Cluster {
             centroid: p0,
-            points_count: 2,
+            points_count: 1,
             points_sum: p0 + p1,
         }
     );
@@ -62,25 +62,41 @@ fn clusterset_init_works() {
     let p0 = Vector2D::new((0.0, 0.0));
     let p1 = Vector2D::new((1.0, 1.0));
     let p2 = Vector2D::new((2.0, 2.0));
-    let c0 = Cluster::from(p0);
+    let mut c0 = Cluster::from(p0);
     let mut c1 = Cluster::from(p1);
-    let clusterset = ClusterSet::new(vec![c0, c1]);
+    let mut clusterset = ClusterSet::new(vec![c0, c1]);
+
     assert_eq!(
         clusterset,
         ClusterSet {
             clusters: vec![c0, c1],
         }
     );
+
     assert_eq!(clusterset.find_nearest(p2), c1);
+
+    c0 = c0.push(p0);
+    clusterset = clusterset.update(&c0);
+    c1 = c1.push(p1);
+    clusterset = clusterset.update(&c1);
     c1 = c1.push(p2);
+    clusterset = clusterset.update(&c1);
+    
+    let new_c0 = Cluster {
+        centroid: p0,
+        points_count: 1,
+        points_sum: p0,
+    };
     let new_c1 = Cluster {
         centroid: p1,
         points_count: 2,
-        points_sum: p1 + p2,
+        points_sum: p1+p2,
     };
-    let new_clusterset = ClusterSet::new(vec![c0, new_c1]);
-    assert_eq!(clusterset.update(&c1), new_clusterset);
-    assert_eq!(clusterset.delta(), 0.0);
+    let expected_clusterset = ClusterSet::new(vec![new_c0, new_c1]);
+
+    assert_eq!(clusterset, expected_clusterset);
+    
+    assert_eq!(clusterset.delta(), 0.70710677);
 }
 
 #[test]
@@ -133,7 +149,7 @@ fn dataset_classifies_into_clusters() {
     let c1 = Cluster::from(p1);
     let c2 = Cluster::from(p2);
     let clusterset = ClusterSet::new(vec![c1, c2]);
-    let expected_clusterset = ClusterSet::new(vec![c1.push(p0), c2.push(p3).push(p4)]);
+    let expected_clusterset = ClusterSet::new(vec![c1.push(p0).push(p1), c2.push(p2).push(p3).push(p4)]);
     assert_eq!(dataset.classify_into(clusterset), expected_clusterset);
 }
 
