@@ -55,22 +55,6 @@ fn cluster_init_works() {
     let p0 = Vector2D::new((0.0, 0.0));
     let p1 = Vector2D::new((1.0, 1.0));
     let c0 = Cluster::new(p0);
-    assert_eq!(
-        c0,
-        Cluster {
-            centroid: p0,
-            points_count: 1,
-            points_sum: p0,
-        }
-    );
-    assert_eq!(
-        c0.push(p1),
-        Cluster {
-            centroid: p0,
-            points_count: 2,
-            points_sum: p0 + p1,
-        }
-    );
     assert_eq!(c0.oscillation(), 0.0);
     assert_eq!(c0.push(p1).oscillation(), 0.70710677);
 }
@@ -120,30 +104,4 @@ impl ClusterSet {
             .iter()
             .fold(0.0, |acc, c| acc + c.oscillation())
     }
-}
-
-#[test]
-fn clusterset_init_works() {
-    let p0 = Vector2D::new((0.0, 0.0));
-    let p1 = Vector2D::new((1.0, 1.0));
-    let p2 = Vector2D::new((2.0, 2.0));
-    let c0 = Cluster::new(p0);
-    let mut c1 = Cluster::new(p1);
-    let clusterset = ClusterSet::new(vec![c0, c1]);
-    assert_eq!(
-        clusterset,
-        ClusterSet {
-            clusters: vec![c0, c1],
-        }
-    );
-    assert_eq!(clusterset.find_nearest(p2), c1);
-    c1 = c1.push(p2);
-    let new_c1 = Cluster {
-        centroid: p1,
-        points_count: 2,
-        points_sum: p1 + p2,
-    };
-    let new_clusterset = ClusterSet::new(vec![c0, new_c1]);
-    assert_eq!(clusterset.update(&c1), new_clusterset);
-    assert_eq!(clusterset.delta(), 0.0);
 }

@@ -99,28 +99,6 @@ impl Div<f32> for Vector2D {
     }
 }
 
-#[test]
-fn vector2d_operator_overloadings() {
-    let p0 = Vector2D::new((0.0, 0.0));
-    let p1 = Vector2D::new((1.0, 1.0));
-    let p2 = Vector2D::new((2.0, 2.0));
-    assert_eq!(p0 * p0, p0);
-    assert_eq!(p0 * p1, p0);
-    assert_eq!(p1 * p2, p2);
-    assert_eq!(p2 - p1, p1);
-    assert_eq!(p1 - p1, p0);
-    assert_eq!(p1 + p1, p2);
-    assert_eq!(p1 / 1.0, p1);
-    assert_eq!(p0 / 1.0, p0);
-}
-
-#[test]
-#[should_panic(expected = "Cannot divide by zero-valued `Rational`!")]
-fn vector2d_check_div_by_0() {
-    let p1 = Vector2D::new((1.0, 1.0));
-    p1 / 0.0;
-}
-
 // impl KMeansMath for Vector2D {
 //     // determine simple euclidian distance
 //     // sqrt((x1-x2)^2 + (y1-y2)^2)
@@ -128,13 +106,3 @@ fn vector2d_check_div_by_0() {
 //         (self - rhs).square().foldsum().sqrt()
 //     }
 // }
-
-#[test]
-fn vector2d_kmeans_math() {
-    let p0 = Vector2D::new((0.0, 0.0));
-    let p1 = Vector2D::new((1.0, 1.0));
-    let p2 = Vector2D::new((2.0, 2.0));
-    assert_eq!(p0.distance(p1), 1.4142135);
-    assert_eq!(p1.distance(p2), 1.4142135);
-    assert_eq!(p2.distance(p2), 0.0);
-}
