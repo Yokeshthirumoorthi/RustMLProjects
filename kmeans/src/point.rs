@@ -4,8 +4,11 @@
 // distribution of this software for license terms.
 use std::ops::{Add, Div, Mul, Sub};
 
-pub trait KMeansMath {
-    fn distance(self, other: Self) -> f32;
+pub trait KMeansMath: Sized {
+    type Output;
+    fn square(self) -> Self;
+    fn foldsum(self) -> Self::Output;
+    fn distance(self, other: Self) -> Self::Output;
 }
 
 /// Vector2D strictly defines a (x,y) point type
@@ -19,15 +22,6 @@ pub struct Vector2D {
 impl Vector2D {
     pub fn new(point: (f32, f32)) -> Self {
         Vector2D { point }
-    }
-    /// squaring a point generates new point
-    /// whose dimensions are squares of the given point
-    fn square(self) -> Self {
-        self * self
-    }
-    /// sum up all the dimensions of a point
-    fn foldsum(self) -> f32 {
-        self.point.0 + self.point.1
     }
 }
 
@@ -95,6 +89,16 @@ impl Div<f32> for Vector2D {
 }
 
 impl KMeansMath for Vector2D {
+    type Output = f32;
+    /// squaring a point generates new point
+    /// whose dimensions are squares of the given point
+    fn square(self) -> Self {
+        self * self
+    }
+    /// sum up all the dimensions of a point
+    fn foldsum(self) -> f32 {
+        self.point.0 + self.point.1
+    }
     // determine simple euclidian distance
     // sqrt((x1-x2)^2 + (y1-y2)^2)
     fn distance(self, rhs: Self) -> f32 {
