@@ -4,9 +4,9 @@
 // distribution of this software for license terms.
 use std::ops::{Add, Div, Mul, Sub};
 
-// trait KMeansMath {
-//     fn distance(self, other: Self) -> f32;
-// }
+pub trait KMeansMath {
+    fn distance(self, other: Self) -> f32;
+}
 
 /// Vector2D strictly defines a (x,y) point type
 /// Goal is this kmeans algorithm should run in constant time for n dimensions
@@ -28,11 +28,6 @@ impl Vector2D {
     /// sum up all the dimensions of a point
     fn foldsum(self) -> f32 {
         self.point.0 + self.point.1
-    }
-    /// determine simple euclidian distance
-    /// sqrt((x1-x2)^2 + (y1-y2)^2)
-    pub fn distance(self, rhs: Self) -> f32 {
-        (self - rhs).square().foldsum().sqrt()
     }
 }
 
@@ -99,10 +94,10 @@ impl Div<f32> for Vector2D {
     }
 }
 
-// impl KMeansMath for Vector2D {
-//     // determine simple euclidian distance
-//     // sqrt((x1-x2)^2 + (y1-y2)^2)
-//     fn distance(self, rhs: Self) -> f32 {
-//         (self - rhs).square().foldsum().sqrt()
-//     }
-// }
+impl KMeansMath for Vector2D {
+    // determine simple euclidian distance
+    // sqrt((x1-x2)^2 + (y1-y2)^2)
+    fn distance(self, rhs: Self) -> f32 {
+        (self - rhs).square().foldsum().sqrt()
+    }
+}

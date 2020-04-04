@@ -2,7 +2,7 @@
 // [This program is licensed under the "MIT License"]
 // Please see the file LICENSE in the source
 // distribution of this software for license terms.
-use crate::point::Vector2D;
+use crate::point::*;
 
 /// Centroid is a point again
 pub type Centroid = Vector2D;
@@ -21,12 +21,12 @@ impl Cluster {
     /// centroid is the first point for any cluster,
     pub fn new(centroid: Centroid) -> Cluster {
         Cluster {
-            centroid: centroid,
+            centroid,
             points_count: 1,
             points_sum: centroid,
         }
     }
-    /// Increment the number of points and recompute the 
+    /// Increment the number of points and recompute the
     /// points sum when a new point is pushed into cluster
     pub fn push(&self, point: Vector2D) -> Cluster {
         if self.centroid == point {
@@ -95,7 +95,11 @@ impl ClusterSet {
     }
     /// Compute new centroid for each cluster in clusterset
     pub fn next_clusterset(&self) -> ClusterSet {
-        let next_centroids = self.clusters.iter().map(|c| c.next_cluster()).collect::<Vec<Cluster>>();
+        let next_centroids = self
+            .clusters
+            .iter()
+            .map(|c| c.next_cluster())
+            .collect::<Vec<Cluster>>();
         ClusterSet::new(next_centroids)
     }
     /// Compute the aggregated oscillation of all the clusters in clusterset

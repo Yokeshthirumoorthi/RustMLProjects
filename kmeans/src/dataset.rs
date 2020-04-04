@@ -3,9 +3,8 @@
 // Please see the file LICENSE in the source
 // distribution of this software for license terms.
 
-use crate::point::Vector2D;
 use crate::cluster::*;
-
+use crate::point::*;
 
 /// Dataset holds the complete collection of
 /// points that need to be classified.

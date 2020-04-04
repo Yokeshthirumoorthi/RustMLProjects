@@ -1,7 +1,6 @@
-use kmeans::point::Vector2D;
 use kmeans::cluster::*;
 use kmeans::dataset::*;
-
+use kmeans::point::*;
 
 #[test]
 fn vector2d_operator_overloadings() {
@@ -35,7 +34,6 @@ fn vector2d_kmeans_math() {
     assert_eq!(p2.distance(p2), 0.0);
 }
 
-
 #[test]
 fn cluster_init_works() {
     let p0 = Vector2D::new((0.0, 0.0));
@@ -58,7 +56,6 @@ fn cluster_init_works() {
         }
     );
 }
-
 
 #[test]
 fn clusterset_init_works() {
@@ -85,7 +82,6 @@ fn clusterset_init_works() {
     assert_eq!(clusterset.update(&c1), new_clusterset);
     assert_eq!(clusterset.delta(), 0.0);
 }
-
 
 #[test]
 fn dataset_init_works() {

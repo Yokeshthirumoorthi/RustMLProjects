@@ -2,11 +2,11 @@
 // [This program is licensed under the "MIT License"]
 // Please see the file LICENSE in the source
 // distribution of this software for license terms.
-use kmeans::point::Vector2D;
 use kmeans::dataset::DataSet;
+use kmeans::point::Vector2D;
 fn main() {
     let mut dataset: DataSet = Default::default();
- 
+
     dataset.push(Vector2D::new((1.0, 1.0)));
     dataset.push(Vector2D::new((2.0, 2.0)));
     dataset.push(Vector2D::new((3.0, 3.0)));

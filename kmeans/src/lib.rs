@@ -2,9 +2,9 @@
 // [This program is licensed under the "MIT License"]
 // Please see the file LICENSE in the source
 // distribution of this software for license terms.
-pub mod point;
 pub mod cluster;
 pub mod dataset;
+pub mod point;
 
 use crate::cluster::ClusterSet;
 use crate::dataset::DataSet;
