@@ -5,10 +5,10 @@
 use std::ops::{Add, Div, Mul, Sub};
 use std::fmt;
 
-pub trait KMeansMath: Sized {
+pub trait KMeansPoint: Sized {
     type Output;
     fn square(self) -> Self;
-    fn foldsum(self) -> Self::Output;
+    fn sum(self) -> Self::Output;
     fn distance(self, other: Self) -> Self::Output;
 }
 
@@ -37,8 +37,8 @@ fn vector2d_works() {
     assert_eq!(p0.square(), p0);
     assert_eq!(p1.square(), p1);
     assert_eq!(p2.square(), p4);
-    assert_eq!(p0.foldsum(), 0.0);
-    assert_eq!(p2.foldsum(), 4.0);
+    assert_eq!(p0.sum(), 0.0);
+    assert_eq!(p2.sum(), 4.0);
 }
 
 /// multiply two points and the new point is
@@ -98,7 +98,7 @@ impl fmt::Debug for Vector2D {
     }
 }
 
-impl KMeansMath for Vector2D {
+impl KMeansPoint for Vector2D {
     type Output = f32;
     /// squaring a point generates new point
     /// whose dimensions are squares of the given point
@@ -106,12 +106,12 @@ impl KMeansMath for Vector2D {
         self * self
     }
     /// sum up all the dimensions of a point
-    fn foldsum(self) -> f32 {
+    fn sum(self) -> f32 {
         self.point.0 + self.point.1
     }
     // determine simple euclidian distance
     // sqrt((x1-x2)^2 + (y1-y2)^2)
     fn distance(self, rhs: Self) -> f32 {
-        (self - rhs).square().foldsum().sqrt()
+        (self - rhs).square().sum().sqrt()
     }
 }

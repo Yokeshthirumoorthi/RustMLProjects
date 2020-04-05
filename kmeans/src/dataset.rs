@@ -21,6 +21,15 @@ pub struct DataSet {
 }
 
 impl DataSet {
+
+    fn collect_as_cluster(&self, n: usize) -> Vec<Cluster> {
+        self.items
+            .iter()
+            .take(n)
+            .map(|item| Cluster::from(*item))
+            .collect()
+    }
+
     /// Add new points to dataset
     pub fn push(&mut self, point: Vector2D) {
         self.items.push(point);
@@ -34,9 +43,8 @@ impl DataSet {
         if n > self.items.len() {
             panic!("Dont ask for more clusters than total points in dataset!");
         }
-        let clusters = self.items[..n].iter().map(|p| Cluster::from(*p)).collect();
 
-        ClusterSet::new(clusters)
+        ClusterSet::new(self.collect_as_cluster(n))
     }
 
     /// Find the nearest cluster for each point in dataset.
