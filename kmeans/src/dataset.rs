@@ -17,7 +17,7 @@ use crate::point::*;
 /// The PartialEq is derived for testing purpose
 #[derive(Debug, Default, PartialEq)]
 pub struct DataSet {
-    pub items: Vec<Vector2D>,
+    pub items: Vec<Point>,
 }
 
 impl DataSet {
@@ -31,7 +31,7 @@ impl DataSet {
     }
 
     /// Add new points to dataset
-    pub fn push(&mut self, point: Vector2D) {
+    pub fn push(&mut self, point: Point) {
         self.items.push(point);
     }
 

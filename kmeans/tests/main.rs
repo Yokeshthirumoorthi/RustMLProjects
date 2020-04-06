@@ -3,10 +3,10 @@ use kmeans::dataset::*;
 use kmeans::point::*;
 
 #[test]
-fn vector2d_operator_overloadings() {
-    let p0 = Vector2D::new((0.0, 0.0));
-    let p1 = Vector2D::new((1.0, 1.0));
-    let p2 = Vector2D::new((2.0, 2.0));
+fn point_operator_overloadings() {
+    let p0 = Point::new((0.0, 0.0));
+    let p1 = Point::new((1.0, 1.0));
+    let p2 = Point::new((2.0, 2.0));
     assert_eq!(p0 * p0, p0);
     assert_eq!(p0 * p1, p0);
     assert_eq!(p1 * p2, p2);
@@ -19,16 +19,16 @@ fn vector2d_operator_overloadings() {
 
 #[test]
 #[should_panic(expected = "Cannot divide by zero-valued `Rational`!")]
-fn vector2d_check_div_by_0() {
-    let p1 = Vector2D::new((1.0, 1.0));
+fn point_check_div_by_0() {
+    let p1 = Point::new((1.0, 1.0));
     p1 / 0.0;
 }
 
 #[test]
-fn vector2d_kmeans_math() {
-    let p0 = Vector2D::new((0.0, 0.0));
-    let p1 = Vector2D::new((1.0, 1.0));
-    let p2 = Vector2D::new((2.0, 2.0));
+fn point_kmeans_math() {
+    let p0 = Point::new((0.0, 0.0));
+    let p1 = Point::new((1.0, 1.0));
+    let p2 = Point::new((2.0, 2.0));
     assert_eq!(p0.distance(p1), 1.4142135);
     assert_eq!(p1.distance(p2), 1.4142135);
     assert_eq!(p2.distance(p2), 0.0);
@@ -36,8 +36,8 @@ fn vector2d_kmeans_math() {
 
 #[test]
 fn cluster_init_works() {
-    let p0 = Vector2D::new((0.0, 0.0));
-    let p1 = Vector2D::new((1.0, 1.0));
+    let p0 = Point::new((0.0, 0.0));
+    let p1 = Point::new((1.0, 1.0));
     let c0 = Cluster::from(p0);
     assert_eq!(
         c0,
@@ -59,9 +59,9 @@ fn cluster_init_works() {
 
 #[test]
 fn clusterset_init_works() {
-    let p0 = Vector2D::new((0.0, 0.0));
-    let p1 = Vector2D::new((1.0, 1.0));
-    let p2 = Vector2D::new((2.0, 2.0));
+    let p0 = Point::new((0.0, 0.0));
+    let p1 = Point::new((1.0, 1.0));
+    let p2 = Point::new((2.0, 2.0));
     let mut c0 = Cluster::from(p0);
     let mut c1 = Cluster::from(p1);
     let mut clusterset = ClusterSet::new(vec![c0, c1]);
@@ -101,8 +101,8 @@ fn clusterset_init_works() {
 
 #[test]
 fn dataset_init_works() {
-    let p0 = Vector2D::new((0.0, 0.0));
-    let p1 = Vector2D::new((1.0, 1.0));
+    let p0 = Point::new((0.0, 0.0));
+    let p1 = Point::new((1.0, 1.0));
     let mut dataset: DataSet = Default::default();
     assert_eq!(dataset, DataSet { items: Vec::new() });
     dataset.push(p0);
@@ -119,9 +119,9 @@ fn dataset_init_works() {
 #[test]
 fn dataset_generates_initial_clusters() {
     let mut dataset: DataSet = Default::default();
-    let p0 = Vector2D::new((0.0, 0.0));
-    let p1 = Vector2D::new((1.0, 1.0));
-    let p2 = Vector2D::new((2.0, 2.0));
+    let p0 = Point::new((0.0, 0.0));
+    let p1 = Point::new((1.0, 1.0));
+    let p2 = Point::new((2.0, 2.0));
     dataset.push(p0);
     dataset.push(p1);
     dataset.push(p2);
@@ -135,11 +135,11 @@ fn dataset_generates_initial_clusters() {
 #[test]
 fn dataset_classifies_into_clusters() {
     let mut dataset: DataSet = Default::default();
-    let p0 = Vector2D::new((0.0, 0.0));
-    let p1 = Vector2D::new((1.0, 1.0));
-    let p2 = Vector2D::new((2.0, 2.0));
-    let p3 = Vector2D::new((3.0, 3.0));
-    let p4 = Vector2D::new((4.0, 4.0));
+    let p0 = Point::new((0.0, 0.0));
+    let p1 = Point::new((1.0, 1.0));
+    let p2 = Point::new((2.0, 2.0));
+    let p3 = Point::new((3.0, 3.0));
+    let p4 = Point::new((4.0, 4.0));
     dataset.push(p0);
     dataset.push(p1);
     dataset.push(p2);
@@ -157,7 +157,7 @@ fn dataset_classifies_into_clusters() {
 #[should_panic(expected = "Dont ask for more clusters than total points in dataset!")]
 fn clusters_to_dataset_size_check() {
     let mut dataset: DataSet = Default::default();
-    let p1 = Vector2D::new((1.0, 1.0));
+    let p1 = Point::new((1.0, 1.0));
     dataset.push(p1);
     dataset.generate_initial_clusters(3);
 }

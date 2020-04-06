@@ -12,6 +12,8 @@ pub trait KMeansPoint: Sized {
     fn distance(self, other: Self) -> Self::Output;
 }
 
+pub type Point = Vector2D;
+
 /// Vector2D strictly defines a (x,y) point type
 /// Goal is this kmeans algorithm should run in constant time for n dimensions
 #[derive(Copy, Clone, PartialEq)]

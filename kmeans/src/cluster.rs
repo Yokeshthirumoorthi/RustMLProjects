@@ -6,7 +6,7 @@ use crate::point::*;
 use std::convert::From;
 
 /// Centroid is a point again
-pub type Centroid = Vector2D;
+pub type Centroid = Point;
 
 /// Cluster type has a centroid, number of points
 /// in the cluster and sum of those points.
@@ -14,13 +14,13 @@ pub type Centroid = Vector2D;
 pub struct Cluster {
     pub centroid: Centroid,
     pub points_count: i32,
-    pub points_sum: Vector2D,
+    pub points_sum: Point,
 }
 
 impl Cluster {
     /// Increment the number of points and recompute the
     /// points sum when a new point is pushed into cluster
-    pub fn push(&self, point: Vector2D) -> Cluster {
+    pub fn push(&self, point: Point) -> Cluster {
         Cluster {
             centroid: self.centroid,
             points_count: self.points_count + 1,
@@ -46,15 +46,15 @@ impl From<Centroid> for Cluster {
         Cluster {
             centroid,
             points_count: 0,
-            points_sum: Vector2D::new((0.0,0.0)),
+            points_sum: Point::new((0.0,0.0)),
         }
     }
 }
 
 #[test]
 fn cluster_init_works() {
-    let p0 = Vector2D::new((0.0, 0.0));
-    let p1 = Vector2D::new((1.0, 1.0));
+    let p0 = Point::new((0.0, 0.0));
+    let p1 = Point::new((1.0, 1.0));
     let c0 = Cluster::from(p0);
     assert_eq!(c0.push(p1).oscillation(), 1.4142135);
 }
@@ -72,7 +72,7 @@ impl ClusterSet {
         ClusterSet { clusters }
     }
     /// Get the cluster closest to a given point
-    pub fn find_nearest(&self, point: Vector2D) -> Cluster {
+    pub fn find_nearest(&self, point: Point) -> Cluster {
         *self
             .clusters
             .iter()
