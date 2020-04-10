@@ -12,7 +12,7 @@ pub trait KMeansPoint: Sized {
     fn distance(self, other: Self) -> Self::Output;
 }
 
-pub type Point = Vector2D;
+pub type Point = Vector;
 
 /// Vector type defines on point in dataset.
 #[derive(Clone, PartialEq, Debug)]

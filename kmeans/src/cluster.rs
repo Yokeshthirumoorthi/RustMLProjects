@@ -10,7 +10,7 @@ pub type Centroid = Point;
 
 /// Cluster type has a centroid, number of points
 /// in the cluster and sum of those points.
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Cluster {
     pub centroid: Centroid,
     pub points_count: i32,
@@ -20,7 +20,7 @@ pub struct Cluster {
 impl Cluster {
     /// Increment the number of points and recompute the
     /// points sum when a new point is pushed into cluster
-    pub fn push(&self, point: Point) -> Cluster {
+    pub fn push(self, point: Point) -> Cluster {
         Cluster {
             centroid: self.centroid,
             points_count: self.points_count + 1,
@@ -30,12 +30,12 @@ impl Cluster {
     /// divide points_sum with number of points in the cluster
     /// to find clusters new centroid
     fn next_cluster(&self) -> Cluster {
-        Cluster::from(self.points_sum / self.points_count as f32)
+        Cluster::from(self.points_sum.clone() / self.points_count as f32)
     }
     /// Compute the distance between centroid
     /// and nxt_centroid
     fn oscillation(&self) -> f32 {
-        self.centroid.distance(self.next_cluster().centroid)
+        self.clone().centroid.distance(self.clone().next_cluster().centroid)
     }
 }
 
@@ -46,15 +46,15 @@ impl From<Centroid> for Cluster {
         Cluster {
             centroid,
             points_count: 0,
-            points_sum: Point::new((0.0,0.0)),
+            points_sum: Point::new(Vec::new()),
         }
     }
 }
 
 #[test]
 fn cluster_init_works() {
-    let p0 = Point::new((0.0, 0.0));
-    let p1 = Point::new((1.0, 1.0));
+    let p0 = Point::new(vec![0.0, 0.0]);
+    let p1 = Point::new(vec![1.0, 1.0]);
     let c0 = Cluster::from(p0);
     assert_eq!(c0.push(p1).oscillation(), 1.4142135);
 }
@@ -73,22 +73,22 @@ impl ClusterSet {
     }
     /// Get the cluster closest to a given point
     pub fn find_nearest(&self, point: Point) -> Cluster {
-        *self
+        self
             .clusters
             .iter()
-            .map(|c| (point.distance(c.centroid), c))
+            .map(|c| (point.clone().distance(c.centroid.clone()), c))
             .min_by(|(d1, _), (d2, _)| d1.partial_cmp(d2).expect("tried a NaN comparison"))
             .unwrap()
-            .1
+            .1.clone()
     }
     /// Replace a old cluster with a new cluster in a clusterset
-    pub fn update(&self, updated_cluster: &Cluster) -> ClusterSet {
+    pub fn update(self, updated_cluster: Cluster) -> ClusterSet {
         let mut updated_clusters = Vec::new();
         for cluster in self.clusters.iter() {
             if cluster.centroid == updated_cluster.centroid {
-                updated_clusters.push(*updated_cluster)
+                updated_clusters.push(updated_cluster.clone())
             } else {
-                updated_clusters.push(*cluster)
+                updated_clusters.push(cluster.clone())
             }
         }
         ClusterSet::new(updated_clusters)

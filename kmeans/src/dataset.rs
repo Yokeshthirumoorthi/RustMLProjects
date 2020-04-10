@@ -26,7 +26,7 @@ impl DataSet {
         self.items
             .iter()
             .take(n)
-            .map(|item| Cluster::from(*item))
+            .map(|item| Cluster::from(item.clone()))
             .collect()
     }
 
@@ -52,8 +52,8 @@ impl DataSet {
     pub fn classify_into(&self, clusters: ClusterSet) -> ClusterSet {
         let mut updated_clusters = clusters.clone();
         for item in self.items.iter() {
-            let nearest_cluster = updated_clusters.find_nearest(*item).push(*item);
-            updated_clusters = updated_clusters.update(&nearest_cluster);
+            let nearest_cluster = updated_clusters.find_nearest(item.clone()).push(item.clone());
+            updated_clusters = updated_clusters.update(nearest_cluster);
         }
         updated_clusters
     }
