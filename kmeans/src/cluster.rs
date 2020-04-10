@@ -30,7 +30,7 @@ impl Cluster {
     /// divide points_sum with number of points in the cluster
     /// to find clusters new centroid
     fn next_cluster(&self) -> Cluster {
-        Cluster::from(self.points_sum.clone() / self.points_count as f32)
+        Cluster::from(self.clone().points_sum / self.points_count as f32)
     }
     /// Compute the distance between centroid
     /// and nxt_centroid
@@ -43,10 +43,11 @@ impl Cluster {
 /// centroid is the first point for any cluster,
 impl From<Centroid> for Cluster {
     fn from(centroid: Centroid) -> Self {
+        let n = centroid.point.len();
         Cluster {
             centroid,
             points_count: 0,
-            points_sum: Point::new(Vec::new()),
+            points_sum: Point::new(vec![0.0; n]),
         }
     }
 }
@@ -82,7 +83,7 @@ impl ClusterSet {
             .1.clone()
     }
     /// Replace a old cluster with a new cluster in a clusterset
-    pub fn update(self, updated_cluster: Cluster) -> ClusterSet {
+    pub fn update(&self, updated_cluster: Cluster) -> ClusterSet {
         let mut updated_clusters = Vec::new();
         for cluster in self.clusters.iter() {
             if cluster.centroid == updated_cluster.centroid {
