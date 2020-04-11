@@ -5,6 +5,31 @@
 use crate::point::*;
 use std::convert::From;
 
+pub trait ClusterObject {
+    /// Increment the number of points and recompute the
+    /// points sum when a new point is pushed into cluster
+    fn push(self, point: Point) -> Cluster;
+    /// divide points_sum with number of points in the cluster
+    /// to find clusters new centroid
+    fn next_cluster(&self) -> Cluster;
+    /// Compute the distance between centroid
+    /// and nxt_centroid
+    fn oscillation(&self) -> f32;
+}
+
+pub trait ClusterSetObject {
+    /// Create a new clusterset using list of cluster objects
+    fn new(clusters: Vec<Cluster>) -> ClusterSet;
+    /// Get the cluster closest to a given point
+    fn find_nearest(&self, point: Point) -> Cluster;
+    /// Replace a old cluster with a new cluster in a clusterset
+    fn update(&self, updated_cluster: Cluster) -> ClusterSet;
+    /// Compute new centroid for each cluster in clusterset
+    fn next_clusterset(&self) -> ClusterSet;
+    /// Compute the aggregated oscillation of all the clusters in clusterset
+    fn delta(&self) -> f32;
+}
+
 /// Centroid is a point again
 pub type Centroid = Point;
 
@@ -17,23 +42,17 @@ pub struct Cluster {
     pub points_sum: Point,
 }
 
-impl Cluster {
-    /// Increment the number of points and recompute the
-    /// points sum when a new point is pushed into cluster
-    pub fn push(self, point: Point) -> Cluster {
+impl ClusterObject for Cluster {
+    fn push(self, point: Point) -> Cluster {
         Cluster {
             centroid: self.centroid,
             points_count: self.points_count + 1,
             points_sum: self.points_sum + point,
         }
     }
-    /// divide points_sum with number of points in the cluster
-    /// to find clusters new centroid
     fn next_cluster(&self) -> Cluster {
         Cluster::from(self.clone().points_sum / self.points_count as f32)
     }
-    /// Compute the distance between centroid
-    /// and nxt_centroid
     fn oscillation(&self) -> f32 {
         self.clone().centroid.distance(self.clone().next_cluster().centroid)
     }
@@ -52,13 +71,6 @@ impl From<Centroid> for Cluster {
     }
 }
 
-#[test]
-fn cluster_init_works() {
-    let p0 = Point::new(vec![0.0, 0.0]);
-    let p1 = Point::new(vec![1.0, 1.0]);
-    let c0 = Cluster::from(p0);
-    assert_eq!(c0.push(p1).oscillation(), 1.4142135);
-}
 
 /// ClusterSet is collection of clusters.
 /// Capacity of ClusterSet is always same as number of clusters.
@@ -67,13 +79,11 @@ pub struct ClusterSet {
     pub clusters: Vec<Cluster>,
 }
 
-impl ClusterSet {
-    /// Create a new clusterset using list of cluster objects
-    pub fn new(clusters: Vec<Cluster>) -> ClusterSet {
+impl ClusterSetObject for ClusterSet {
+    fn new(clusters: Vec<Cluster>) -> ClusterSet {
         ClusterSet { clusters }
     }
-    /// Get the cluster closest to a given point
-    pub fn find_nearest(&self, point: Point) -> Cluster {
+    fn find_nearest(&self, point: Point) -> Cluster {
         self
             .clusters
             .iter()
@@ -82,8 +92,7 @@ impl ClusterSet {
             .unwrap()
             .1.clone()
     }
-    /// Replace a old cluster with a new cluster in a clusterset
-    pub fn update(&self, updated_cluster: Cluster) -> ClusterSet {
+    fn update(&self, updated_cluster: Cluster) -> ClusterSet {
         let mut updated_clusters = Vec::new();
         for cluster in self.clusters.iter() {
             if cluster.centroid == updated_cluster.centroid {
@@ -94,8 +103,7 @@ impl ClusterSet {
         }
         ClusterSet::new(updated_clusters)
     }
-    /// Compute new centroid for each cluster in clusterset
-    pub fn next_clusterset(&self) -> ClusterSet {
+    fn next_clusterset(&self) -> ClusterSet {
         let next_centroids = self
             .clusters
             .iter()
@@ -103,8 +111,7 @@ impl ClusterSet {
             .collect::<Vec<Cluster>>();
         ClusterSet::new(next_centroids)
     }
-    /// Compute the aggregated oscillation of all the clusters in clusterset
-    pub fn delta(&self) -> f32 {
+    fn delta(&self) -> f32 {
         self.clusters
             .iter()
             .fold(0.0, |acc, c| acc + c.oscillation())

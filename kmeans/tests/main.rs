@@ -119,6 +119,14 @@ fn dataset_init_works() {
 }
 
 #[test]
+fn cluster_oscillation_works() {
+    let p0 = Point::new(vec![0.0, 0.0]);
+    let p1 = Point::new(vec![1.0, 1.0]);
+    let c0 = Cluster::from(p0);
+    assert_eq!(c0.push(p1).oscillation(), 1.4142135);
+}
+
+#[test]
 fn dataset_generates_initial_clusters() {
     let mut dataset: DataSet = Default::default();
     dataset.push(p0());

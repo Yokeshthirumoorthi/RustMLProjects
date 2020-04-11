@@ -6,7 +6,7 @@ pub mod cluster;
 pub mod dataset;
 pub mod point;
 
-use crate::cluster::ClusterSet;
+use crate::cluster::*;
 use crate::dataset::DataSet;
 
 pub fn kmeans(dataset: &DataSet, clusters: ClusterSet, threshold: f32) -> ClusterSet {
