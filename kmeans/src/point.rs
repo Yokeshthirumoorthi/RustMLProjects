@@ -6,9 +6,9 @@ use std::ops::{Add, Div, Mul, Sub};
 
 pub trait KMeansPoint: Sized {
     type Output;
-    fn square(self) -> Self;
-    fn sum(self) -> Self::Output;
-    fn distance(self, other: Self) -> Self::Output;
+    fn square(&self) -> Self;
+    fn sum(&self) -> Self::Output;
+    fn distance(&self, other: &Self) -> Self::Output;
 }
 
 pub type Point = Vector;
@@ -27,7 +27,7 @@ impl Vector {
 
 /// multiply two points and the new point is
 /// zip product of each dimentsions
-impl Mul for Vector {
+impl<'a> Mul<&'a Vector> for &'a Vector {
     type Output = Vector;
     fn mul(self, rhs: Self) -> Self::Output {
         Vector {
@@ -38,7 +38,7 @@ impl Mul for Vector {
 
 /// subtract two points and the new point is
 /// zip diff of each dimentsions
-impl Sub for Vector {
+impl<'a> Sub<&'a Vector> for &'a Vector {
     type Output = Vector;
     fn sub(self, rhs: Self) -> Self::Output {
         Vector {
@@ -49,7 +49,7 @@ impl Sub for Vector {
 
 /// add two points and the new point is
 /// zip sum of each dimentsions
-impl Add for Vector {
+impl<'a> Add<&'a Vector> for &'a Vector {
     type Output = Vector;
     fn add(self, rhs: Self) -> Self::Output {
         Vector {
@@ -77,16 +77,16 @@ impl KMeansPoint for Vector {
     type Output = f32;
     /// squaring a point generates new point
     /// whose dimensions are squares of the given point
-    fn square(self) -> Self {
-        self.clone() * self
+    fn square(&self) -> Self {
+        self * self
     }
     /// sum up all the dimensions of a point
-    fn sum(self) -> f32 {
+    fn sum(&self) -> f32 {
         self.point.iter().sum()
     }
     // determine simple euclidian distance
     // sqrt((x1-x2)^2 + (y1-y2)^2)
-    fn distance(self, rhs: Self) -> f32 {
+    fn distance(&self, rhs: &Self) -> f32 {
         (self - rhs).square().sum().sqrt()
     }
 }

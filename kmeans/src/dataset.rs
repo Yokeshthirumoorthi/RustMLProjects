@@ -50,9 +50,9 @@ impl DataSet {
     /// Find the nearest cluster for each point in dataset.
     /// And update the cluster's nxt_centroid with the point.
     pub fn classify_into(&self, clusters: ClusterSet) -> ClusterSet {
-        let mut updated_clusters = clusters.clone();
+        let mut updated_clusters = clusters;
         for item in self.items.iter() {
-            let nearest_cluster = updated_clusters.find_nearest(item.clone()).push(item.clone());
+            let nearest_cluster = updated_clusters.find_nearest(item).push(item);
             updated_clusters = updated_clusters.update(nearest_cluster);
         }
         updated_clusters

@@ -8,7 +8,7 @@ use std::convert::From;
 pub trait ClusterObject {
     /// Increment the number of points and recompute the
     /// points sum when a new point is pushed into cluster
-    fn push(self, point: Point) -> Cluster;
+    fn push(&self, point: &Point) -> Cluster;
     /// divide points_sum with number of points in the cluster
     /// to find clusters new centroid
     fn next_cluster(&self) -> Cluster;
@@ -21,7 +21,7 @@ pub trait ClusterSetObject {
     /// Create a new clusterset using list of cluster objects
     fn new(clusters: Vec<Cluster>) -> ClusterSet;
     /// Get the cluster closest to a given point
-    fn find_nearest(&self, point: Point) -> Cluster;
+    fn find_nearest(&self, point: &Point) -> Cluster;
     /// Replace a old cluster with a new cluster in a clusterset
     fn update(&self, updated_cluster: Cluster) -> ClusterSet;
     /// Compute new centroid for each cluster in clusterset
@@ -43,18 +43,18 @@ pub struct Cluster {
 }
 
 impl ClusterObject for Cluster {
-    fn push(self, point: Point) -> Cluster {
+    fn push(&self, point: &Point) -> Cluster {
         Cluster {
-            centroid: self.centroid,
+            centroid: self.centroid.clone(),
             points_count: self.points_count + 1,
-            points_sum: self.points_sum + point,
+            points_sum: &self.points_sum + point,
         }
     }
     fn next_cluster(&self) -> Cluster {
         Cluster::from(self.clone().points_sum / self.points_count as f32)
     }
     fn oscillation(&self) -> f32 {
-        self.clone().centroid.distance(self.clone().next_cluster().centroid)
+        self.centroid.distance(&self.next_cluster().centroid)
     }
 }
 
@@ -83,11 +83,11 @@ impl ClusterSetObject for ClusterSet {
     fn new(clusters: Vec<Cluster>) -> ClusterSet {
         ClusterSet { clusters }
     }
-    fn find_nearest(&self, point: Point) -> Cluster {
+    fn find_nearest(&self, point: &Point) -> Cluster {
         self
             .clusters
             .iter()
-            .map(|c| (point.clone().distance(c.centroid.clone()), c))
+            .map(|c| (point.distance(&c.centroid), c))
             .min_by(|(d1, _), (d2, _)| d1.partial_cmp(d2).expect("tried a NaN comparison"))
             .unwrap()
             .1.clone()

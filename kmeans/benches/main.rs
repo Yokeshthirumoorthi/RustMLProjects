@@ -19,7 +19,7 @@ fn bench_add_two(b: &mut Bencher) {
     let dataset = get_dataset();
     let p0 = dataset.items.get(0).unwrap();
     let p1 = dataset.items.get(1).unwrap();
-    b.iter(|| p0.clone() + p1.clone());
+    b.iter(|| p0 + &p1);
 }
 
 #[bench]
@@ -27,7 +27,7 @@ fn bench_distance_two(b: &mut Bencher) {
     let dataset = get_dataset();
     let p0 = dataset.items.get(0).unwrap();
     let p1 = dataset.items.get(1).unwrap();
-    b.iter(|| p0.clone().distance(p1.clone()));
+    b.iter(|| p0.distance(&p1));
 }
 
 #[bench]

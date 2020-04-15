@@ -20,12 +20,12 @@ fn p4() -> Point {
 
 #[test]
 fn point_operator_overloadings() {
-    assert_eq!(p0() * p0(), p0());
-    assert_eq!(p0() * p1(), p0());
-    assert_eq!(p1() * p2(), p2());
-    assert_eq!(p2() - p1(), p1());
-    assert_eq!(p1() - p1(), p0());
-    assert_eq!(p1() + p1(), p2());
+    assert_eq!(&p0() * &p0(), p0());
+    assert_eq!(&p0() * &p1(), p0());
+    assert_eq!(&p1() * &p2(), p2());
+    assert_eq!(&p2() - &p1(), p1());
+    assert_eq!(&p1() - &p1(), p0());
+    assert_eq!(&p1() + &p1(), p2());
     assert_eq!(p1() / 1.0, p1());
     assert_eq!(p0() / 1.0, p0());
 }
@@ -38,9 +38,9 @@ fn point_check_div_by_0() {
 
 #[test]
 fn point_kmeans_math() {
-    assert_eq!(p0().distance(p1()), 1.4142135);
-    assert_eq!(p1().distance(p2()), 1.4142135);
-    assert_eq!(p2().distance(p2()), 0.0);
+    assert_eq!(p0().distance(&p1()), 1.4142135);
+    assert_eq!(p1().distance(&p2()), 1.4142135);
+    assert_eq!(p2().distance(&p2()), 0.0);
 }
 
 #[test]
@@ -55,11 +55,11 @@ fn cluster_init_works() {
         }
     );
     assert_eq!(
-        c0.push(p1()),
+        c0.push(&p1()),
         Cluster {
             centroid: p0(),
             points_count: 1,
-            points_sum: p0() + p1(),
+            points_sum: &p0() + &p1(),
         }
     );
 }
@@ -77,13 +77,13 @@ fn clusterset_init_works() {
         }
     );
 
-    assert_eq!(clusterset.find_nearest(p2()), c1.clone());
+    assert_eq!(clusterset.find_nearest(&p2()), c1.clone());
 
-    c0 = c0.push(p0());
+    c0 = c0.push(&p0());
     clusterset = clusterset.update(c0);
-    c1 = c1.push(p1());
+    c1 = c1.push(&p1());
     clusterset = clusterset.update(c1.clone());
-    c1 = c1.push(p2());
+    c1 = c1.push(&p2());
     clusterset = clusterset.update(c1);
     
     let new_c0 = Cluster {
@@ -94,7 +94,7 @@ fn clusterset_init_works() {
     let new_c1 = Cluster {
         centroid: p1(),
         points_count: 2,
-        points_sum: p1()+p2(),
+        points_sum: &p1()+&p2(),
     };
     let expected_clusterset = ClusterSet::new(vec![new_c0, new_c1]);
 
@@ -123,7 +123,7 @@ fn cluster_oscillation_works() {
     let p0 = Point::new(vec![0.0, 0.0]);
     let p1 = Point::new(vec![1.0, 1.0]);
     let c0 = Cluster::from(p0);
-    assert_eq!(c0.push(p1).oscillation(), 1.4142135);
+    assert_eq!(c0.push(&p1).oscillation(), 1.4142135);
 }
 
 #[test]
@@ -153,7 +153,7 @@ fn dataset_classifies_into_clusters() {
     let clusterset = ClusterSet::new(vec![c1, c2]);
     let c1 = Cluster::from(p1());
     let c2 = Cluster::from(p2());
-    let expected_clusterset = ClusterSet::new(vec![c1.push(p0()).push(p1()), c2.push(p2()).push(p3()).push(p4())]);
+    let expected_clusterset = ClusterSet::new(vec![c1.push(&p0()).push(&p1()), c2.push(&p2()).push(&p3()).push(&p4())]);
     assert_eq!(dataset.classify_into(clusterset), expected_clusterset);
 }
 
