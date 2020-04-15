@@ -16,15 +16,6 @@ fn main() {
     dataset.push(Vector::new(vec![7.0, 7.0]));
     dataset.push(Vector::new(vec![8.0, 8.0]));
     dataset.push(Vector::new(vec![9.0, 9.0]));
-    // dataset.push(Vector2D::new((1.0, 1.0)));
-    // dataset.push(Vector2D::new((2.0, 2.0)));
-    // dataset.push(Vector2D::new((3.0, 3.0)));
-    // dataset.push(Vector2D::new((4.0, 4.0)));
-    // dataset.push(Vector2D::new((5.0, 5.0)));
-    // dataset.push(Vector2D::new((6.0, 6.0)));
-    // dataset.push(Vector2D::new((7.0, 7.0)));
-    // dataset.push(Vector2D::new((8.0, 8.0)));
-    // dataset.push(Vector2D::new((9.0, 9.0)));
 
     let initial_clusters = dataset.generate_initial_clusters(2);
     println!(
